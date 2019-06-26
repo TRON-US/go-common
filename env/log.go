@@ -1,9 +1,5 @@
 package env
 
-import (
-	"os"
-)
-
 var (
 	LogFile = ""
 )
