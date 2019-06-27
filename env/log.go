@@ -5,7 +5,7 @@ var (
 )
 
 func init() {
-	if lf := getEnv("LOG_FILE"); lf != "" {
+	if _, lf := GetEnv("LOG_FILE"); lf != "" {
 		LogFile = lf
 	}
 }

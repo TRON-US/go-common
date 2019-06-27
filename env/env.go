@@ -17,18 +17,20 @@ var (
 	serverEnv = EnvDev
 )
 
-// getEnv checks the prefix settings and returns the correct application-
+// GetEnv checks the prefix settings and returns the correct application-
 // specific environment variable value
-func getEnv(name string) string {
+func GetEnv(name string) (string, string) {
 	if pre := os.Getenv(EnvNamePrefixEnv); pre != "" {
-		return os.Getenv(pre + name)
+		name = pre + name
+	} else {
+		name = EnvNamePrefix + name
 	}
-	return os.Getenv(EnvNamePrefix + name)
+	return name, os.Getenv(name)
 }
 
 func init() {
 	// Default (and anything else invalid) to dev
-	switch env := getEnv("ENV"); env {
+	switch _, env := GetEnv("ENV"); env {
 	case string(EnvStaging):
 		serverEnv = EnvStaging
 	case string(EnvProd):
