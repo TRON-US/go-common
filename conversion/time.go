@@ -22,6 +22,11 @@ func EpochStamp2MicroTime(timestamp int64) time.Time {
 	return time.Unix(0, timestamp*int64(time.Microsecond))
 }
 
+// Time2SecondStamp converts a local timestamp to a UNIX epoch time in second (int64)
+func Time2SecondStamp(t time.Time) int64 {
+	return t.UnixNano() / int64(time.Second)
+}
+
 // Time2MilliStamp converts a local timestamp to a UNIX epoch time in millisecond (int64)
 func Time2MilliStamp(t time.Time) int64 {
 	return t.UnixNano() / int64(time.Millisecond)

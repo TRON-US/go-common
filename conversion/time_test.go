@@ -8,10 +8,12 @@ import (
 )
 
 var (
+	testEpochStampSecond  int64 = 1555555555
 	testEpochStampMilli   int64 = 1555555555555
 	testEpochStampMicro   int64 = 1555555555555555
 	testMilliTimeString         = "2019-04-18 02:45:55.555 +0000 UTC"
 	testMicroTimeString         = "2019-04-18 02:45:55.555555 +0000 UTC"
+	testTimeSecond              = time.Date(2019, time.April, 18, 2, 45, 55, 000000000, time.UTC)
 	testTimeMilli               = time.Date(2019, time.April, 18, 2, 45, 55, 555000000, time.UTC)
 	testTimeMicro               = time.Date(2019, time.April, 18, 2, 45, 55, 555555000, time.UTC)
 	testPGTimeStringMilli       = "2019-04-18 02:45:55.555"
@@ -27,6 +29,11 @@ func TestEpochStamp2MilliTime(t *testing.T) {
 func TestEpochStamp2MicroTime(t *testing.T) {
 	res := EpochStamp2MicroTime(testEpochStampMicro)
 	assert.Equal(t, testMicroTimeString, res.UTC().String(), "EpochStamp2MicroTime failed to convert unix time to local timestamp")
+}
+
+func TestTime2SecondStamp(t *testing.T) {
+	res := Time2SecondStamp(testTimeSecond)
+	assert.Equal(t, testEpochStampSecond, res, "Time2SecondStamp failed to convert local timestamp to unix time")
 }
 
 func TestTime2MilliStamp(t *testing.T) {
