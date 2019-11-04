@@ -9,5 +9,5 @@ import (
 
 const (
 	DBURLParseError    = constant.DBURLParseError
-	IntConversionError = "Could not convert to an integer!"
+	IntConversionError = constant.IntConversionError
 )
