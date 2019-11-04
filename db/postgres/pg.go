@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/tron-us/go-common/common"
+	"github.com/tron-us/go-common/constant"
 	env "github.com/tron-us/go-common/env/db"
 	"github.com/tron-us/go-common/log"
 
@@ -24,7 +24,7 @@ func NewTGPGDB(db *pg.DB) *TGPGDB {
 func CreateTGPGDB(url string) *TGPGDB {
 	opts, err := pg.ParseURL(url)
 	if err != nil {
-		log.Panic(common.DBURLParseError, zap.String("URL:", url), zap.Error(err))
+		log.Panic(constant.DBURLParseError, zap.String("URL:", url), zap.Error(err))
 	}
 	opts.ReadTimeout = env.DBReadTimeout
 	opts.WriteTimeout = env.DBWriteTimeout

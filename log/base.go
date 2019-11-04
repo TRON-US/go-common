@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tron-us/go-common/common"
+	"github.com/tron-us/go-common/constant"
 	"github.com/tron-us/go-common/env"
 
 	"go.uber.org/zap"
@@ -38,7 +38,7 @@ func init() {
 	logger, err = cfg.Build()
 	if err != nil {
 		// No logger available, use plain-old panic
-		panic(fmt.Sprintf("%v [%v]", common.LogInitError, err))
+		panic(fmt.Sprintf("%v [%v]", constant.LogInitError, err))
 	}
 
 	Debug = logger.Debug
@@ -63,23 +63,23 @@ func SetLoggerContextFields(ctx context.Context, fields ...zap.Field) context.Co
 		ctx = context.Background() // create empty context by default
 	}
 	var logFields []zap.Field
-	if logFieldKey := ctx.Value(common.ContextLogFieldKey); logFieldKey != nil {
+	if logFieldKey := ctx.Value(constant.ContextLogFieldKey); logFieldKey != nil {
 		logFields = logFieldKey.([]zap.Field)
 	}
 	// Append to end of current log fields
-	return context.WithValue(ctx, common.ContextLogFieldKey, append(logFields, fields...))
+	return context.WithValue(ctx, constant.ContextLogFieldKey, append(logFields, fields...))
 }
 
 func setLoggerContext(ctx context.Context) *zap.Logger {
 	loggerTmp := logger
 	if ctx != nil {
-		if handlerKey := ctx.Value(common.ContextHandlerKey); handlerKey != nil {
+		if handlerKey := ctx.Value(constant.HandlerNameContext); handlerKey != nil {
 			loggerTmp = loggerTmp.Named(handlerKey.(string))
 		}
-		if urlKey := ctx.Value(common.ContextHTTPURLKey); urlKey != nil {
+		if urlKey := ctx.Value(constant.HTTPURLContext); urlKey != nil {
 			loggerTmp = loggerTmp.Named(urlKey.(string))
 		}
-		if logFieldKey := ctx.Value(common.ContextLogFieldKey); logFieldKey != nil {
+		if logFieldKey := ctx.Value(constant.ContextLogFieldKey); logFieldKey != nil {
 			loggerTmp = loggerTmp.With(logFieldKey.([]zap.Field)...)
 		}
 	}
