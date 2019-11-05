@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tron-us/go-common/common"
+	"github.com/tron-us/go-common/constant"
 	"github.com/tron-us/go-common/env"
 	"github.com/tron-us/go-common/log"
 
@@ -35,7 +35,7 @@ func init() {
 		// Attempt at connecting to a common local database
 		DBWriteURL = fmt.Sprintf("postgresql://%s@localhost:5432/%s", u.Username, u.Username)
 	} else {
-		log.Panic(common.EmptyVarError, zap.String("env", envKey))
+		log.Panic(constant.EmptyVarError, zap.String("env", envKey))
 	}
 	// if slave url passed, use it as read default
 	if _, duR := env.GetEnv("DB_READ_URL"); duR != "" {
@@ -48,14 +48,14 @@ func init() {
 	}
 	if envKey, dbst := env.GetEnv("DB_STMT_TIMEOUT"); dbst != "" {
 		if toInt, err := strconv.ParseInt(dbst, 10, 64); err != nil {
-			log.Warn(common.IntConversionError, zap.String("env", envKey), zap.Error(err))
+			log.Warn(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
 		} else {
 			DBStmtTimeout = time.Duration(toInt) * time.Second
 		}
 	}
 	if envKey, dbnc := env.GetEnv("DB_NUM_CONNS"); dbnc != "" {
 		if toInt, err := strconv.ParseInt(dbnc, 10, 64); err != nil {
-			log.Warn(common.IntConversionError, zap.String("env", envKey), zap.Error(err))
+			log.Warn(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
 		} else {
 			DBNumConns = int(toInt)
 		}

@@ -1,8 +1,13 @@
 package common
 
+// gracefully deprecating this package
+// moving forward to use constant package instead
+
+import (
+	"github.com/tron-us/go-common/constant"
+)
+
 const (
-	ContextHandlerKey  = "Handler Name"
-	ContextHTTPURLKey  = "HTTP URL"
-	ContextLogFieldKey = "Log Fields"
-	ContextPostgresTx  = "Postgres Transaction"
+	ContextHandlerKey = constant.HandlerNameContext
+	ContextHTTPURLKey = constant.HTTPURLContext
 )

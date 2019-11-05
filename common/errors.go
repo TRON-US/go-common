@@ -1,10 +1,13 @@
 package common
 
+// gracefully deprecating this package
+// moving forward to use constant package instead
+
+import (
+	"github.com/tron-us/go-common/constant"
+)
+
 const (
-	DBURLParseError = "Cannot parse database URL!"
-
-	LogInitError = "Cannot initialize logging module!"
-
-	IntConversionError = "Could not convert to an integer!"
-	EmptyVarError      = "Could not use empty variable!"
+	DBURLParseError    = constant.DBURLParseError
+	IntConversionError = constant.IntConversionError
 )
