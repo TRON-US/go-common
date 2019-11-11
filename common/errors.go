@@ -4,7 +4,7 @@ package common
 // moving forward to use constant package instead
 
 import (
-	"github.com/tron-us/go-common/constant"
+	"github.com/tron-us/go-common/v2/constant"
 )
 
 const (

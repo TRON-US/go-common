@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tron-us/go-common/constant"
-	"github.com/tron-us/go-common/env"
-	"github.com/tron-us/go-common/log"
+	"github.com/tron-us/go-common/v2/constant"
+	"github.com/tron-us/go-common/v2/env"
+	"github.com/tron-us/go-common/v2/log"
 
 	"go.uber.org/zap"
 )
