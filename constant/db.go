@@ -8,6 +8,8 @@ const (
 	DBMasterConnectionError = "Cannot connect to the master database!"
 	DBSlaveConnectionError  = "Cannot connect to the slave database!"
 	DBURLParseError         = "Cannot parse database connection URL!"
+	RDConnectionError 		= "Cannot connect to the RD database!"
+
 	// CRUD
 	DBQueryError         = "Cannot query the database!"
 	DBUpsertError        = "Cannot upsert into the database!"
@@ -21,6 +23,8 @@ const (
 
 	// -- DEBUG --
 	DBConnectionHealthy = "Connection to database is healthy."
+	RDConnectionHealthy = "Connection to redis is healthy."
+
 	// write
 	DBWriteAvailability = "DBWriteAvailability"
 	DBWriteError        = "DBWriteError"
