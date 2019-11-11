@@ -1,4 +1,4 @@
-module github.com/tron-us/go-common
+module github.com/tron-us/go-common/v2
 
 go 1.13
 
