@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 
-	"github.com/tron-us/go-common/log"
+	"github.com/tron-us/go-common/v2/log"
 
 	"github.com/go-pg/pg/v9"
 	"go.uber.org/zap"

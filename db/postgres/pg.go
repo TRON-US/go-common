@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/tron-us/go-common/constant"
-	env "github.com/tron-us/go-common/env/db"
-	"github.com/tron-us/go-common/log"
+	"github.com/tron-us/go-common/v2/constant"
+	env "github.com/tron-us/go-common/v2/env/db"
+	"github.com/tron-us/go-common/v2/log"
 
 	"github.com/go-pg/migrations/v7"
 	"github.com/go-pg/pg/v9"

@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 
-	"github.com/tron-us/go-common/constant"
+	"github.com/tron-us/go-common/v2/constant"
 
 	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"
