@@ -9,6 +9,7 @@ const (
 	DBSlaveConnectionError  = "Cannot connect to the slave database!"
 	DBURLParseError         = "Cannot parse database connection URL!"
 	RDConnectionError 		= "Cannot connect to the RD database!"
+	DBRDConnectionUrlError  = "Database and postgres conneciton was not provided! "
 
 	// CRUD
 	DBQueryError         = "Cannot query the database!"
