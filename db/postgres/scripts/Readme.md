@@ -1,4 +1,4 @@
-# prostegress database generic scripts
+# postgres database generic scripts
 
 ## create_db
 
