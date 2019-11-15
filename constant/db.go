@@ -8,8 +8,7 @@ const (
 	DBMasterConnectionError = "Cannot connect to the master database!"
 	DBSlaveConnectionError  = "Cannot connect to the slave database!"
 	DBURLParseError         = "Cannot parse database connection URL!"
-	RDConnectionError 		= "Cannot connect to the RD database!"
-	DBRDConnectionUrlError  = "Database and postgres conneciton was not provided! "
+	RDConnectionError       = "Cannot connect to the RD database!"
 
 	// CRUD
 	DBQueryError         = "Cannot query the database!"
