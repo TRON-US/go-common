@@ -2,13 +2,7 @@ package redis
 
 import (
 	"fmt"
-	"log"
-	netUrl "net/url"
-
-	"github.com/tron-us/go-common/constant"
-
 	redis "github.com/go-redis/redis/v7"
-	"go.uber.org/zap"
 )
 
 type TGRDDB struct {
@@ -21,19 +15,16 @@ var (
 	db   = 0
 )
 
-func CreateTGRDDB(url string) *TGRDDB {
-	opts, err := netUrl.Parse(url)
+func ParseRedisURL(url string) (*redis.Options, error) {
+	opts, err := redis.ParseURL(url)
 	if err != nil {
-		log.Panic(constant.DBURLParseError, zap.String("URL:", url), zap.Error(err))
+		return nil, err
 	}
-	password, _ := opts.User.Password()
-	host = opts.Host
-	port = opts.Port()
-	var client = redis.NewClient(&redis.Options{
-		Addr:     host,
-		Password: password, // no password set
-		DB:       db,       // use default DB
-	})
+	return opts, nil
+}
+
+func NewRedisConn(redisOptions *redis.Options) *TGRDDB {
+	var client = redis.NewClient(redisOptions)
 	return &TGRDDB{client}
 }
 
