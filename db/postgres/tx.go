@@ -3,10 +3,10 @@ package postgres
 import (
 	"context"
 
-	"github.com/tron-us/go-common/constant"
+	"github.com/tron-us/go-common/v2/constant"
 
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v9/orm"
 )
 
 // RunInTransactionContext wraps around underlying go-pg's rollback-supported transaction execution

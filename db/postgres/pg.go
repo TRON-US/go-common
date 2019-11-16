@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/tron-us/go-common/constant"
-	env "github.com/tron-us/go-common/env/db"
-	"github.com/tron-us/go-common/log"
+	"github.com/tron-us/go-common/v2/constant"
+	env "github.com/tron-us/go-common/v2/env/db"
+	"github.com/tron-us/go-common/v2/log"
 
-	"github.com/go-pg/migrations"
-	"github.com/go-pg/pg"
+	"github.com/go-pg/migrations/v7"
+	"github.com/go-pg/pg/v9"
 	"go.uber.org/zap"
 )
 
@@ -21,10 +21,21 @@ func NewTGPGDB(db *pg.DB) *TGPGDB {
 	return &TGPGDB{db}
 }
 
+type TGPGDBOptions struct {
+	Url string
+
+	DisableBeforeQueryLog bool
+	DisableAfterQueryLog  bool
+}
+
 func CreateTGPGDB(url string) *TGPGDB {
-	opts, err := pg.ParseURL(url)
+	return CreateTGPGDBWithOptions(&TGPGDBOptions{Url: url})
+}
+
+func CreateTGPGDBWithOptions(dbOpts *TGPGDBOptions) *TGPGDB {
+	opts, err := pg.ParseURL(dbOpts.Url)
 	if err != nil {
-		log.Panic(constant.DBURLParseError, zap.String("URL:", url), zap.Error(err))
+		log.Panic(constant.DBURLParseError, zap.String("URL", dbOpts.Url), zap.Error(err))
 	}
 	opts.ReadTimeout = env.DBReadTimeout
 	opts.WriteTimeout = env.DBWriteTimeout
@@ -33,7 +44,12 @@ func CreateTGPGDB(url string) *TGPGDB {
 		opts.PoolSize = env.DBNumConns
 	}
 
-	return NewTGPGDB(pg.Connect(opts))
+	db := NewTGPGDB(pg.Connect(opts))
+	db.AddQueryHook(dbQueryLoggerHook{
+		beforeEnabled: !dbOpts.DisableBeforeQueryLog,
+		afterEnabled:  !dbOpts.DisableAfterQueryLog,
+	})
+	return db
 }
 
 // Ping simulates a "blank query" behavior similar to lib/pq's
