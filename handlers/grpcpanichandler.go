@@ -4,7 +4,7 @@ import (
 	"errors"
 	"runtime"
 
-	"github.com/tron-us/go-common/log"
+	"github.com/tron-us/go-common/v2/log"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
