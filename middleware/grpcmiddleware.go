@@ -1,8 +1,9 @@
 package middleware
 
 import (
+	"bytes"
 	"errors"
-	"runtime"
+	"runtime/debug"
 
 	"github.com/tron-us/go-common/v2/log"
 	"go.uber.org/zap"
@@ -15,9 +16,8 @@ import (
 var (
 	// Panic handler prints the stack trace when recovering from a panic.
 	RecoveryCustomFunc grpc_recovery.RecoveryHandlerFunc = grpc_recovery.RecoveryHandlerFunc(func(p interface{}) error {
-		buf := make([]byte, 1<<16)
-		stacklen := runtime.Stack(buf, true)
-		log.Error("Panic attack :", zap.Error(errors.New(string(buf[:stacklen]))))
+		buf := bytes.NewBuffer(debug.Stack())
+		log.Error("Panic attack :", zap.Error(errors.New(buf.String())))
 		return status.Errorf(codes.Internal, "%s", p)
 	})
 	// Shared options for the logger, with a custom gRPC code to log level function.
