@@ -3,6 +3,7 @@ package middleware
 import (
 	"bytes"
 	"errors"
+	"google.golang.org/grpc"
 	"runtime/debug"
 
 	"github.com/tron-us/go-common/v2/log"
@@ -10,6 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 )
 
@@ -24,6 +26,10 @@ var (
 	Opts = []grpc_recovery.Option{
 		grpc_recovery.WithRecoveryHandler(RecoveryCustomFunc),
 	}
-
 	UnaryServerInterceptor = grpc_recovery.UnaryServerInterceptor(Opts...)
+	GrpcServerOption       grpc.ServerOption
 )
+
+func init() {
+	GrpcServerOption = grpc_middleware.WithUnaryServerChain(UnaryServerInterceptor)
+}
