@@ -10,7 +10,7 @@ const (
 
 	EnvDev     = "dev"
 	EnvStaging = "staging"
-	EnvProd    = "prod"
+	EnvProd    = "production"
 )
 
 var (
