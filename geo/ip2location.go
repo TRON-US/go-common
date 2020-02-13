@@ -3,7 +3,6 @@ package geo
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/ip2location/ip2location-go"
@@ -23,7 +22,7 @@ func Ip2Location(ip string) (string, string, float32, float32) {
 }
 
 // ExtractIp extract ipv4 adress from context
-// that passed down from nginx ingress server
+// that passed down from grpc nginx ingress server
 func ExtractIp(ctx context.Context) (string, error) {
 	addr := ""
 	md, ok := metadata.FromIncomingContext(ctx)
