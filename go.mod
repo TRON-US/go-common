@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d
 	github.com/go-pg/migrations/v7 v7.1.6
-	github.com/go-pg/pg/v9 v9.0.1
+	github.com/go-pg/pg/v9 v9.1.2
 	github.com/go-redis/redis/v7 v7.0.0-beta.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.1.0
 	github.com/ip2location/ip2location-go v8.2.0+incompatible

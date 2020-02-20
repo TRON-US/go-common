@@ -39,5 +39,6 @@ const (
 	DBReadConnection   = "Connected to Read Database."
 
 	// -- ORM --
-	PGQueryBuilderError = "Cannot build query filter for PG driver!"
+	PGQueryBuilderError              = "Cannot build query filter for PG driver!"
+	DBContextTimeoutExceedUpperBound = "DB query timeout context exceed read/write upper bound!"
 )

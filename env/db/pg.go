@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	DBReadTimeout  = 1 * time.Minute
+	DBReadTimeout  = 5 * time.Minute
 	DBWriteTimeout = 1 * time.Minute
 )
 
