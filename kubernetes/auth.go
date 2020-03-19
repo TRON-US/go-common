@@ -1,7 +1,6 @@
 package kubernetes
 
 import (
-	"log"
 	"os"
 
 	"k8s.io/client-go/kubernetes"
@@ -24,12 +23,10 @@ func (k *Config) authenticate() (err error) {
 		config, err = rest.InClusterConfig()
 	}
 	if err != nil {
-		log.Printf("Cannot connect to Kubernetes: %v\n", err)
 		return err
 	}
 	k.clientset, err = kubernetes.NewForConfig(config)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 	return nil
