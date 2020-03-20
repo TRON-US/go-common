@@ -10,11 +10,11 @@ import (
 
 // Config contains the kubernetes clientset and configs.
 type Config struct {
-	clientset *kubernetes.Clientset
+	clientset kubernetes.Interface
 }
 
 // authenticate authenticates and authorizes the client.
-func (k *Config) authenticate() (err error) {
+func (k *Config) Authenticate() (err error) {
 	var config *rest.Config
 	kubeconfigPath := os.Getenv("KUBECONFIG")
 	if len(kubeconfigPath) > 0 {

@@ -8,12 +8,6 @@ import (
 )
 
 func (k *Config) GetActivePods(namespace, labels string) (pods []string, err error) {
-	// Authenticate with kubernetes cluster
-	err = k.authenticate()
-	if err != nil {
-		return
-	}
-
 	// Get the current namespace, if no namespace is provided
 	if len(namespace) == 0 {
 		nsBytes, nsErr := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
