@@ -16,6 +16,9 @@ var fakeclientset = fake.NewSimpleClientset(
 			Namespace:   "testing",
 			Annotations: map[string]string{},
 		},
+		Status: corev1.PodStatus{
+			Phase: corev1.PodRunning,
+		},
 	},
 	&corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
@@ -27,6 +30,9 @@ var fakeclientset = fake.NewSimpleClientset(
 				"pod2label2":  "value2",
 				"commonlabel": "commonvalue",
 			},
+		},
+		Status: corev1.PodStatus{
+			Phase: corev1.PodRunning,
 		},
 	},
 	&corev1.Pod{
@@ -40,6 +46,9 @@ var fakeclientset = fake.NewSimpleClientset(
 				"commonlabel": "commonvalue",
 			},
 		},
+		Status: corev1.PodStatus{
+			Phase: corev1.PodRunning,
+		},
 	},
 	&corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
@@ -49,6 +58,22 @@ var fakeclientset = fake.NewSimpleClientset(
 			Labels: map[string]string{
 				"commonlabel": "commonvalue",
 			},
+		},
+		Status: corev1.PodStatus{
+			Phase: corev1.PodRunning,
+		},
+	},
+	&corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:        "pod-5",
+			Namespace:   "testing",
+			Annotations: map[string]string{},
+			Labels: map[string]string{
+				"commonlabel": "commonvalue",
+			},
+		},
+		Status: corev1.PodStatus{
+			Phase: corev1.PodPending,
 		},
 	},
 )
@@ -60,19 +85,19 @@ var testdata = []struct {
 	podcount  int
 }{
 	{
-		title:     "Get All Pods",
+		title:     "Get All Active Pods",
 		namespace: "testing",
 		labels:    "",
 		podcount:  4,
 	},
 	{
-		title:     "Get Pods with unique labels",
+		title:     "Get Active Pods with unique labels",
 		namespace: "testing",
 		labels:    "pod2label2=value2",
 		podcount:  1,
 	},
 	{
-		title:     "Get Pods with common labels",
+		title:     "Get Active Pods with common labels",
 		namespace: "testing",
 		labels:    "commonlabel=commonvalue",
 		podcount:  3,

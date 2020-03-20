@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -18,8 +19,7 @@ func (k *Config) GetActivePods(namespace, labels string) (pods []string, err err
 	}
 
 	// Options greps the output with the conditions provided.
-	// List of pods is filtered by labels and status=Running.
-	options := metav1.ListOptions{LabelSelector: labels, FieldSelector: "status.phase=Running"}
+	options := metav1.ListOptions{LabelSelector: labels}
 
 	// Query Kubernetes API to get the list
 	podObjects, err := k.clientset.CoreV1().Pods(namespace).List(options)
@@ -30,7 +30,10 @@ func (k *Config) GetActivePods(namespace, labels string) (pods []string, err err
 	// Get the name of pods from podObjects.
 	// Returns emtpy slice if no pods are found.
 	for _, podObject := range podObjects.Items {
-		pods = append(pods, podObject.GetName())
+		// List of pods is filtered by labels and status=Running.
+		if podObject.Status.Phase == corev1.PodRunning {
+			pods = append(pods, podObject.GetName())
+		}
 	}
 
 	return
