@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
 )
 
@@ -40,5 +41,29 @@ func TestAuthenticationKubeConfigError(t *testing.T) {
 	err := k.Authenticate()
 	if err == nil {
 		t.Error("Corrupted Kubeconfig should throw an error")
+	}
+}
+
+func TestAuthenticationKube(t *testing.T) {
+	k := newFakeClient()
+	kubeconfig := "./testdata/samplekubeconfig"
+	os.Setenv("KUBECONFIG", kubeconfig)
+	err := k.Authenticate()
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestAuthenticationKubeError(t *testing.T) {
+	k := newFakeClient()
+	kubeconfig := "./testdata/samplekubeconfig"
+	os.Setenv("KUBECONFIG", kubeconfig)
+	err := k.Authenticate()
+	if err != nil {
+		t.Error(err)
+	}
+	_, err = k.clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
+	if err == nil {
+		t.Error("Fake kubernetes should throw an error")
 	}
 }
