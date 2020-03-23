@@ -123,6 +123,12 @@ var nstestdata = []struct {
 		namespace:     "",
 		err:           errors.New("Cannot get namespace from file"),
 	},
+	{
+		title:         "Empty namespace",
+		namespaceFile: "./testdata/emptynamespace",
+		namespace:     "",
+		err:           errors.New("Cannot get namespace from file"),
+	},
 }
 
 func TestGetActivePodsErrorWithoutNamespace(t *testing.T) {
@@ -144,8 +150,8 @@ func TestGetNamespaceFromFile(t *testing.T) {
 		t.Run(tt.title, func(t *testing.T) {
 			t.Parallel()
 			namespace, err := getNamespaceFromFile(tt.namespaceFile)
-			assert.Equal(t, namespace, tt.namespace, "Error getting namespace from file")
-			assert.Equal(t, err, tt.err, "Error getting namespace from file")
+			assert.Equal(t, tt.namespace, namespace, "Error getting namespace from file")
+			assert.Equal(t, tt.err, err, "Error getting namespace from file")
 		})
 	}
 }

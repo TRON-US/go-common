@@ -41,17 +41,31 @@ func (k *Config) GetActivePods(namespace, labels string) (pods []string, err err
 	return
 }
 
+// getNamespaceFromFile detects namespace from namespace file.
+// This is meant to run in kube environments.
+// Returns string.
 func getNamespaceFromFile(namespaceFile string) (namespace string, err error) {
 	if !fileExists(namespaceFile) {
 		return "", errors.New("Cannot get namespace from file")
 	}
+
 	nsBytes, nsErr := ioutil.ReadFile(namespaceFile)
 	if nsErr != nil {
 		return "", nsErr
 	}
-	return strings.TrimSpace(string(nsBytes)), nil
+
+	namespace = strings.TrimSpace(string(nsBytes))
+
+	// Check if file returned empty
+	if len(namespace) == 0 {
+		return "", errors.New("Cannot get namespace from file")
+	}
+
+	return namespace, err
 }
 
+// fileExists checks if a files exists or not.
+// Returns a bool
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
