@@ -1,7 +1,9 @@
 package kubernetes
 
 import (
+	"errors"
 	"io/ioutil"
+	"os"
 	"strings"
 
 	corev1 "k8s.io/api/core/v1"
@@ -11,11 +13,11 @@ import (
 func (k *Config) GetActivePods(namespace, labels string) (pods []string, err error) {
 	// Get the current namespace, if no namespace is provided
 	if len(namespace) == 0 {
-		nsBytes, nsErr := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
-		if nsErr != nil {
-			return nil, nsErr
+		namespaceFile := "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
+		namespace, err = getNamespaceFromFile(namespaceFile)
+		if err != nil {
+			return nil, err
 		}
-		namespace = strings.TrimSpace(string(nsBytes))
 	}
 
 	// Options greps the output with the conditions provided.
@@ -37,4 +39,23 @@ func (k *Config) GetActivePods(namespace, labels string) (pods []string, err err
 	}
 
 	return
+}
+
+func getNamespaceFromFile(namespaceFile string) (namespace string, err error) {
+	if !fileExists(namespaceFile) {
+		return "", errors.New("Cannot get namespace from file")
+	}
+	nsBytes, nsErr := ioutil.ReadFile(namespaceFile)
+	if nsErr != nil {
+		return "", nsErr
+	}
+	return strings.TrimSpace(string(nsBytes)), nil
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
