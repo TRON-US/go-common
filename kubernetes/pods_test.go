@@ -155,23 +155,15 @@ func TestGetActivePods(t *testing.T) {
 	k := Config{}
 	for _, tt := range testdata {
 		tt := tt
-		t.Run(tt.title, func(tt struct {
-			title     string
-			namespace string
-			labels    string
-			podcount  int
-		}) func(t *testing.T) {
-			return func(t *testing.T) {
-				k.clientset = fakeclientset
-				pods, err := k.GetActivePods(tt.namespace, tt.labels)
-				assert.Equal(t, nil, err, "Error executing GetActivePods")
+		t.Run(tt.title, func(t *testing.T) {
+			t.Parallel()
+			k.clientset = fakeclientset
+			pods, err := k.GetActivePods(tt.namespace, tt.labels)
+			assert.Equal(t, nil, err, "Error executing GetActivePods")
 
-				got := len(pods)
-				want := tt.podcount
-				if got != want {
-					assert.Equal(t, want, got, "Number of pods")
-				}
-			}
-		}(tt))
+			got := len(pods)
+			want := tt.podcount
+			assert.Equal(t, want, got, "Number of pods")
+		})
 	}
 }
