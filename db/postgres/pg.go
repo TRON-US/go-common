@@ -70,15 +70,14 @@ func (db *TGPGDB) Migrate() error {
 		return err
 	}
 
-	// Intentionally ignore harmless errors on initializing gopg_migrations
-	_, _, err = cl.Run(db, "init")
-	if err != nil && !DBMigrationsAlreadyInit(err) {
-		return err
-	}
-
 	var oldVersion, newVersion int64
 	// Run all migrations in a transaction so we rollback if migrations fail anywhere
 	err = db.RunInTransaction(func(tx *pg.Tx) error {
+		// Intentionally ignore harmless errors on initializing gopg_migrations
+		_, _, err = cl.Run(db, "init")
+		if err != nil && !DBMigrationsAlreadyInit(err) {
+			return err
+		}
 		oldVersion, newVersion, err = cl.Run(db, "up")
 		return err
 	})
