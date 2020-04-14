@@ -22,75 +22,89 @@ var (
 	DBMigrationsDir = "./migrations"
 	DBStmtTimeout   = 10 * time.Second
 	DBNumConns      = 0 // max db conns, 0 = use driver-recommended default\
-	readUserName string
-	readPwd string
-	readHost string
-	readDbName string
-	writeUserName string
-	writePwd string
-	writeHost string
-	writeDbName string
-
+	readUserName    string
+	readPwd         string
+	readHost        string
+	readDbName      string
+	writeUserName   string
+	writePwd        string
+	writeHost       string
+	writeDbName     string
+	un              string
+	pwd             string
+	host            string
+	dbName          string
 )
 
 func init() {
 	// Fetch master db as default write, can't be empty;
+	_, duW := env.GetEnv("DB_URL")
+	if duW != "" {
+		DBWriteURL = duW
+	} else {
+		envDbWUnKey, _un := env.GetEnv("DB_WRITE_USERNAME")
+		if _un != "" {
+			writeUserName = _un
+		} else {
+			log.Panic(constant.EmptyVarError, zap.String("env", envDbWUnKey))
+		}
 
-	envDbRUnKey, un := env.GetEnv("DB_READ_USERNAME")
-	if un != "" {
-		readUserName = un
-	}else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envDbRUnKey))
+		envDbWPwdKey, _pwd := env.GetEnv("DB_WRITE_PASSWORD")
+		if _pwd != "" {
+			writePwd = _pwd
+		} else {
+			log.Panic(constant.EmptyVarError, zap.String("env", envDbWPwdKey))
+		}
+
+		envDbWHost, _host := env.GetEnv("DB_WRITE_HOST")
+		if _host != "" {
+			writeHost = _host
+		} else {
+			log.Panic(constant.EmptyVarError, zap.String("env", envDbWHost))
+		}
+
+		envDbWNameKey, _dbName := env.GetEnv("DB_WRITE_NAME")
+		if _dbName != "" {
+			writeDbName = _dbName
+		} else {
+			log.Panic(constant.EmptyVarError, zap.String("env", envDbWNameKey))
+		}
+
 	}
 
-	envDbRPwdKey, pwd := env.GetEnv("DB_READ_PASSWORD")
-	if pwd != ""{
-		readPwd = pwd
-	}else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envDbRPwdKey))
+	if _, duR := env.GetEnv("DB_READ_URL"); duR != "" {
+		DBReadURL = duR
+	} else {
+		envDbRUnKey, un := env.GetEnv("DB_READ_USERNAME")
+		if un != "" {
+			readUserName = un
+		} else {
+			log.Panic(constant.EmptyVarError, zap.String("env", envDbRUnKey))
+		}
+
+		envDbRPwdKey, pwd := env.GetEnv("DB_READ_PASSWORD")
+		if pwd != "" {
+			readPwd = pwd
+		} else {
+			log.Panic(constant.EmptyVarError, zap.String("env", envDbRPwdKey))
+		}
+
+		envDbRHostKey, host := env.GetEnv("DB_READ_HOST")
+		if host != "" {
+			readHost = host
+		} else {
+			log.Panic(constant.EmptyVarError, zap.String("env", envDbRHostKey))
+		}
+
+		envDbRNameKey, dbName := env.GetEnv("DB_READ_NAME")
+		if dbName != "" {
+			readDbName = dbName
+		} else {
+			log.Panic(constant.EmptyVarError, zap.String("env", envDbRNameKey))
+		}
+
 	}
 
-	envDbRHostKey, host := env.GetEnv("DB_READ_HOST")
-	if host != ""{
-		readHost = host
-	}else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envDbRHostKey))
-	}
-
-	envDbRNameKey, dbName := env.GetEnv("DB_READ_NAME")
-	if dbName != ""{
-		readDbName = dbName
-	}else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envDbRNameKey))
-	}
-
-	envDbWUnKey, _un := env.GetEnv("DB_WRITE_USERNAME")
-	if un != "" {
-		writeUserName = _un
-	}else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envDbWUnKey))
-	}
-
-	envDbWPwdKey, _pwd := env.GetEnv("DB_WRITE_PASSWORD")
-	if pwd != ""{
-		writePwd = _pwd
-	}else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envDbWPwdKey))
-	}
-
-	envDbWHost, _host := env.GetEnv("DB_WRITE_HOST")
-	if host != ""{
-		writeHost = _host
-	}else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envDbWHost))
-	}
-
-	envDbWNameKey, _dbName := env.GetEnv("DB_WRITE_NAME")
-	if dbName != ""{
-		writeDbName = _dbName
-	}else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envDbWNameKey))
-	}
 	// if slave url passed, use it as read default
 	if _, md := env.GetEnv("MIGRATIONS_DIR"); md != "" {
 		DBMigrationsDir = md
@@ -110,7 +124,7 @@ func init() {
 		}
 	}
 
+	DBWriteURL = "postgresql://" + writeUserName + ":" + writePwd + "@" + writeHost + ":5432/" + writeDbName
 	DBReadURL = "postgresql://" + readUserName + ":" + readPwd + "@" + readHost + ":5432/" + readDbName
 
-	DBWriteURL = "postgresql://" + writeUserName + ":" + writePwd + "@" + writeHost + ":5432/" + writeDbName
 }
