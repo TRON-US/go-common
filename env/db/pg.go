@@ -1,8 +1,6 @@
 package db
 
 import (
-	"fmt"
-	"os/user"
 	"strconv"
 	"time"
 
@@ -23,26 +21,77 @@ var (
 	DBWriteURL      string
 	DBMigrationsDir = "./migrations"
 	DBStmtTimeout   = 10 * time.Second
-	DBNumConns      = 0 // max db conns, 0 = use driver-recommended default
+	DBNumConns      = 0 // max db conns, 0 = use driver-recommended default\
+	readUserName string
+	readPwd string
+	readHost string
+	readDbName string
+	writeUserName string
+	writePwd string
+	writeHost string
+	writeDbName string
+
 )
 
 func init() {
 	// Fetch master db as default write, can't be empty;
-	envKey, duW := env.GetEnv("DB_URL")
-	if duW != "" {
-		DBWriteURL = duW
-	} else if u, err := user.Current(); err == nil {
-		// Attempt at connecting to a common local database
-		DBWriteURL = fmt.Sprintf("postgresql://%s@localhost:5432/%s", u.Username, u.Username)
-	} else {
-		log.Panic(constant.EmptyVarError, zap.String("env", envKey))
+
+	envDbRUnKey, un := env.GetEnv("DB_READ_USERNAME")
+	if un != "" {
+		readUserName = un
+	}else {
+		log.Panic(constant.EmptyVarError, zap.String("env", envDbRUnKey))
+	}
+
+	envDbRPwdKey, pwd := env.GetEnv("DB_READ_PASSWORD")
+	if pwd != ""{
+		readPwd = pwd
+	}else {
+		log.Panic(constant.EmptyVarError, zap.String("env", envDbRPwdKey))
+	}
+
+	envDbRHostKey, host := env.GetEnv("DB_READ_HOST")
+	if host != ""{
+		readHost = host
+	}else {
+		log.Panic(constant.EmptyVarError, zap.String("env", envDbRHostKey))
+	}
+
+	envDbRNameKey, dbName := env.GetEnv("DB_READ_NAME")
+	if dbName != ""{
+		readDbName = dbName
+	}else {
+		log.Panic(constant.EmptyVarError, zap.String("env", envDbRNameKey))
+	}
+
+	envDbWUnKey, _un := env.GetEnv("DB_WRITE_USERNAME")
+	if un != "" {
+		writeUserName = _un
+	}else {
+		log.Panic(constant.EmptyVarError, zap.String("env", envDbWUnKey))
+	}
+
+	envDbWPwdKey, _pwd := env.GetEnv("DB_WRITE_PASSWORD")
+	if pwd != ""{
+		writePwd = _pwd
+	}else {
+		log.Panic(constant.EmptyVarError, zap.String("env", envDbWPwdKey))
+	}
+
+	envDbWHost, _host := env.GetEnv("DB_WRITE_HOST")
+	if host != ""{
+		writeHost = _host
+	}else {
+		log.Panic(constant.EmptyVarError, zap.String("env", envDbWHost))
+	}
+
+	envDbWNameKey, _dbName := env.GetEnv("DB_WRITE_NAME")
+	if dbName != ""{
+		writeDbName = _dbName
+	}else {
+		log.Panic(constant.EmptyVarError, zap.String("env", envDbWNameKey))
 	}
 	// if slave url passed, use it as read default
-	if _, duR := env.GetEnv("DB_READ_URL"); duR != "" {
-		DBReadURL = duR
-	} else {
-		DBReadURL = DBWriteURL
-	}
 	if _, md := env.GetEnv("MIGRATIONS_DIR"); md != "" {
 		DBMigrationsDir = md
 	}
@@ -60,4 +109,8 @@ func init() {
 			DBNumConns = int(toInt)
 		}
 	}
+
+	DBReadURL = "postgresql://" + readUserName + ":" + readPwd + "@" + readHost + ":5432/" + readDbName
+
+	DBWriteURL = "postgresql://" + writeUserName + ":" + writePwd + "@" + writeHost + ":5432/" + writeDbName
 }
