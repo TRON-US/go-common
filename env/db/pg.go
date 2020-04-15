@@ -21,7 +21,7 @@ var (
 	DBWriteURL      string
 	DBMigrationsDir = "./migrations"
 	DBStmtTimeout   = 10 * time.Second
-	DBNumConns      = 0 // max db conns, 0 = use driver-recommended default\
+	DBNumConns      = 0 // max db conns, 0 = use driver-recommended default
 	readUserName    string
 	readPwd         string
 	readHost        string
@@ -30,18 +30,20 @@ var (
 	writePwd        string
 	writeHost       string
 	writeDbName     string
-	un              string
-	pwd             string
-	host            string
-	dbName          string
 )
 
 func init() {
-	// Fetch master db as default write, can't be empty;
-	_, duW := env.GetEnv("DB_URL")
-	if duW != "" {
+
+	if _, duW := env.GetEnv("DB_URL"); duW != "" {
 		DBWriteURL = duW
-	} else {
+		// if slave url passed, use it as read default
+		if _, duR := env.GetEnv("DB_READ_URL"); duR != "" {
+			DBReadURL = duR
+		} else {
+			DBReadURL = DBWriteURL
+		}
+	} else  {
+		// Fetch master db as default write, can't be empty;
 		envDbWUnKey, _un := env.GetEnv("DB_WRITE_USERNAME")
 		if _un != "" {
 			writeUserName = _un
@@ -69,12 +71,6 @@ func init() {
 		} else {
 			log.Panic(constant.EmptyVarError, zap.String("env", envDbWNameKey))
 		}
-
-	}
-
-	if _, duR := env.GetEnv("DB_READ_URL"); duR != "" {
-		DBReadURL = duR
-	} else {
 		envDbRUnKey, un := env.GetEnv("DB_READ_USERNAME")
 		if un != "" {
 			readUserName = un
@@ -103,9 +99,10 @@ func init() {
 			log.Panic(constant.EmptyVarError, zap.String("env", envDbRNameKey))
 		}
 
+		DBWriteURL = "postgresql://" + writeUserName + ":" + writePwd + "@" + writeHost + ":5432/" + writeDbName
+		DBReadURL = "postgresql://" + readUserName + ":" + readPwd + "@" + readHost + ":5432/" + readDbName
 	}
 
-	// if slave url passed, use it as read default
 	if _, md := env.GetEnv("MIGRATIONS_DIR"); md != "" {
 		DBMigrationsDir = md
 	}
@@ -123,8 +120,4 @@ func init() {
 			DBNumConns = int(toInt)
 		}
 	}
-
-	DBWriteURL = "postgresql://" + writeUserName + ":" + writePwd + "@" + writeHost + ":5432/" + writeDbName
-	DBReadURL = "postgresql://" + readUserName + ":" + readPwd + "@" + readHost + ":5432/" + readDbName
-
 }
