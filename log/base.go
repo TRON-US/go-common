@@ -8,6 +8,7 @@ import (
 	"github.com/tron-us/go-common/v2/env"
 
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
@@ -30,6 +31,14 @@ func init() {
 		cfg = zap.NewProductionConfig()
 	}
 
+	if _, val := env.GetEnv("LOG_LEVEL"); val != "" {
+		var level zapcore.Level
+		if err := level.Set(val); err != nil {
+			//not support log_level, continue to next code
+		} else {
+			cfg.Level = zap.NewAtomicLevelAt(level)
+		}
+	}
 	if env.LogFile != "" {
 		cfg.OutputPaths = append(cfg.OutputPaths, env.LogFile)
 	}
