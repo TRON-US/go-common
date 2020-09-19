@@ -1,6 +1,7 @@
 package db
 
 import (
+	"os"
 	"strconv"
 	"time"
 
@@ -34,6 +35,9 @@ var (
 
 func init() {
 
+	if os.Getenv(env.EnvNamePrefix) == "" && os.Getenv(env.EnvNamePrefixEnv) == "" {
+		return
+	}
 	if _, duW := env.GetEnv("DB_URL"); duW != "" {
 		DBWriteURL = duW
 		// if slave url passed, use it as read default
@@ -50,7 +54,7 @@ func init() {
 			writeUserName = _un
 		} else {
 			hasError = true
-			log.Debug(constant.EmptyVarError, zap.String("env", envDbWUnKey))
+			log.Warn(constant.EmptyVarError, zap.String("env", envDbWUnKey))
 		}
 
 		envDbWPwdKey, _pwd := env.GetEnv("DB_WRITE_PASSWORD")
@@ -58,7 +62,7 @@ func init() {
 			writePwd = _pwd
 		} else {
 			hasError = true
-			log.Debug(constant.EmptyVarError, zap.String("env", envDbWPwdKey))
+			log.Warn(constant.EmptyVarError, zap.String("env", envDbWPwdKey))
 		}
 
 		envDbWHost, _host := env.GetEnv("DB_WRITE_HOST")
@@ -66,7 +70,7 @@ func init() {
 			writeHost = _host
 		} else {
 			hasError = true
-			log.Debug(constant.EmptyVarError, zap.String("env", envDbWHost))
+			log.Warn(constant.EmptyVarError, zap.String("env", envDbWHost))
 		}
 
 		envDbWNameKey, _dbName := env.GetEnv("DB_WRITE_NAME")
@@ -74,14 +78,14 @@ func init() {
 			writeDbName = _dbName
 		} else {
 			hasError = true
-			log.Debug(constant.EmptyVarError, zap.String("env", envDbWNameKey))
+			log.Warn(constant.EmptyVarError, zap.String("env", envDbWNameKey))
 		}
 		envDbRUnKey, un := env.GetEnv("DB_READ_USERNAME")
 		if un != "" {
 			readUserName = un
 		} else {
 			hasError = true
-			log.Debug(constant.EmptyVarError, zap.String("env", envDbRUnKey))
+			log.Warn(constant.EmptyVarError, zap.String("env", envDbRUnKey))
 		}
 
 		envDbRPwdKey, pwd := env.GetEnv("DB_READ_PASSWORD")
@@ -89,7 +93,7 @@ func init() {
 			readPwd = pwd
 		} else {
 			hasError = true
-			log.Debug(constant.EmptyVarError, zap.String("env", envDbRPwdKey))
+			log.Warn(constant.EmptyVarError, zap.String("env", envDbRPwdKey))
 		}
 
 		envDbRHostKey, host := env.GetEnv("DB_READ_HOST")
@@ -97,7 +101,7 @@ func init() {
 			readHost = host
 		} else {
 			hasError = true
-			log.Debug(constant.EmptyVarError, zap.String("env", envDbRHostKey))
+			log.Warn(constant.EmptyVarError, zap.String("env", envDbRHostKey))
 		}
 
 		envDbRNameKey, dbName := env.GetEnv("DB_READ_NAME")
@@ -105,13 +109,13 @@ func init() {
 			readDbName = dbName
 		} else {
 			hasError = true
-			log.Debug(constant.EmptyVarError, zap.String("env", envDbRNameKey))
+			log.Warn(constant.EmptyVarError, zap.String("env", envDbRNameKey))
 		}
 
 		DBWriteURL = "postgresql://" + writeUserName + ":" + writePwd + "@" + writeHost + ":5432/" + writeDbName
 		DBReadURL = "postgresql://" + readUserName + ":" + readPwd + "@" + readHost + ":5432/" + readDbName
 		if hasError {
-			log.Debug("error to get DBWriteUrl or DBReadURL from env", zap.String("WriteUrl", DBWriteURL), zap.String("ReadUrl", DBReadURL))
+			log.Warn("error to get DBWriteUrl or DBReadURL from env", zap.String("WriteUrl", DBWriteURL), zap.String("ReadUrl", DBReadURL))
 		}
 	}
 
@@ -120,14 +124,14 @@ func init() {
 	}
 	if envKey, dbst := env.GetEnv("DB_STMT_TIMEOUT"); dbst != "" {
 		if toInt, err := strconv.ParseInt(dbst, 10, 64); err != nil {
-			log.Debug(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
+			log.Warn(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
 		} else {
 			DBStmtTimeout = time.Duration(toInt) * time.Second
 		}
 	}
 	if envKey, dbnc := env.GetEnv("DB_NUM_CONNS"); dbnc != "" {
 		if toInt, err := strconv.ParseInt(dbnc, 10, 64); err != nil {
-			log.Debug(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
+			log.Warn(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
 		} else {
 			DBNumConns = int(toInt)
 		}
