@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ip2location/ip2location-go"
+	"github.com/ip2location/ip2location-go/v9"
 	"google.golang.org/grpc/metadata"
 )
 
