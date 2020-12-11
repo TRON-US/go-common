@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -49,6 +50,6 @@ func TestAuthenticationKubeError(t *testing.T) {
 	os.Setenv("KUBECONFIG", kubeconfig)
 	err := k.Authenticate()
 	assert.Equal(t, nil, err, "Authentication error")
-	_, err = k.clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
+	_, err = k.clientset.CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{})
 	assert.NotEqual(t, nil, err, "Fake kubernetes should throw an error")
 }

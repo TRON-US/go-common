@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"context"
 	"errors"
 	"io/ioutil"
 	"os"
@@ -10,7 +11,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (k *Config) GetActivePods(namespace, labels string) (pods []string, err error) {
+func (k *Config) GetActivePods(ctx context.Context, namespace, labels string) (pods []string, err error) {
 	// Get the current namespace, if no namespace is provided
 	if len(namespace) == 0 {
 		namespaceFile := "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
@@ -24,7 +25,7 @@ func (k *Config) GetActivePods(namespace, labels string) (pods []string, err err
 	options := metav1.ListOptions{LabelSelector: labels}
 
 	// Query Kubernetes API to get the list
-	podObjects, err := k.clientset.CoreV1().Pods(namespace).List(options)
+	podObjects, err := k.clientset.CoreV1().Pods(namespace).List(ctx, options)
 	if err != nil {
 		return
 	}

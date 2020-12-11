@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -134,7 +135,7 @@ var nstestdata = []struct {
 func TestGetActivePodsErrorWithoutNamespace(t *testing.T) {
 	t.Parallel()
 	k := newFakeClient()
-	pods, err := k.GetActivePods("", "")
+	pods, err := k.GetActivePods(context.Background(), "", "")
 	namespaceFile := "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
 	if fileExists(namespaceFile) {
 		assert.Equal(t, nil, err, "Error getting namespace from file")
@@ -164,7 +165,7 @@ func TestGetActivePods(t *testing.T) {
 		t.Run(tt.title, func(t *testing.T) {
 			t.Parallel()
 			k.clientset = fakeclientset
-			pods, err := k.GetActivePods(tt.namespace, tt.labels)
+			pods, err := k.GetActivePods(context.Background(), tt.namespace, tt.labels)
 			assert.Equal(t, nil, err, "Error executing GetActivePods")
 
 			got := len(pods)
