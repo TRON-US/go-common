@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/tron-us/go-common/v2/constant"
@@ -101,10 +100,10 @@ func WithContextTimeout(ctx context.Context, f func(ctx context.Context)) {
 // timeout and query cancellation to the postgres server.
 func WithContextTimeoutValue(ctx context.Context, timeout time.Duration, f func(ctx context.Context)) {
 	// check context timeout setting with upper bound read/write limit
-	if timeout > env.DBReadTimeout && timeout > env.DBWriteTimeout {
-		log.Error(constant.DBContextTimeoutExceedUpperBound,
-			zap.Error(fmt.Errorf("query timeout %s exceed upper bound (%s|%s)", timeout, env.DBReadTimeout, env.DBWriteTimeout)))
-	}
+	// if timeout > env.DBReadTimeout && timeout > env.DBWriteTimeout {
+	// 	log.Error(constant.DBContextTimeoutExceedUpperBound,
+	// 		zap.Error(fmt.Errorf("query timeout %s exceed upper bound (%s|%s)", timeout, env.DBReadTimeout, env.DBWriteTimeout)))
+	// }
 	newCtx, cancel := context.WithTimeout(ctx, timeout)
 	f(newCtx)
 	cancel()
