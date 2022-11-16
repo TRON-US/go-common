@@ -12,15 +12,12 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	DBReadTimeout  = 5 * time.Minute
-	DBWriteTimeout = 1 * time.Minute
-)
-
 var (
 	DBReadURL       string // https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING
 	DBWriteURL      string
 	DBMigrationsDir = "./migrations"
+	DBReadTimeout   = 5 * time.Minute
+	DBWriteTimeout  = 1 * time.Minute
 	DBStmtTimeout   = 10 * time.Second
 	DBNumConns      = 0 // max db conns, 0 = use driver-recommended default
 	readUserName    string
@@ -127,6 +124,20 @@ func init() {
 			log.Warn(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
 		} else {
 			DBStmtTimeout = time.Duration(toInt) * time.Second
+		}
+	}
+	if envKey, dbrt := env.GetEnv("DB_READ_TIMEOUT"); dbrt != "" {
+		if toInt, err := strconv.ParseInt(dbrt, 10, 64); err != nil {
+			log.Warn(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
+		} else {
+			DBReadTimeout = time.Duration(toInt) * time.Second
+		}
+	}
+	if envKey, dbwt := env.GetEnv("DB_WRITE_TIMEOUT"); dbwt != "" {
+		if toInt, err := strconv.ParseInt(dbwt, 10, 64); err != nil {
+			log.Warn(constant.IntConversionError, zap.String("env", envKey), zap.Error(err))
+		} else {
+			DBWriteTimeout = time.Duration(toInt) * time.Second
 		}
 	}
 	if envKey, dbnc := env.GetEnv("DB_NUM_CONNS"); dbnc != "" {
